@@ -38,6 +38,7 @@ public class SubImgCharMatcher {
 
     //todo- this func gets a value of brightness and return the right char from the charSet in the class
     public char getCharByImageBrightness(double brightness){
+
         return 'g';
     }
 
