@@ -1,35 +1,51 @@
 package ascii_art;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class CharsBank {
-     private Set<Character> charSet = new HashSet<>();
+    private List<Character> charList = new ArrayList<>();
 
-     public CharsBank(){
-         initCharSet();
-     }
+    public CharsBank() {
+        initCharList();
+    }
 
-     private void initCharSet(){
-        // Add characters '0' to '9' to the set
+    private void initCharList() {
+        // Add characters '0' to '9' to the list
         for (char ch = '0'; ch <= '9'; ch++) {
-            this.charSet.add(ch);
+            this.charList.add(ch);
         }
     }
 
-    public void printCharSet(){
-        for (char ch : this.charSet) {
-            if (ch!=9){
-                System.out.print(ch + " ");
+    public void printCharList() {
+        // Sort the list in natural (ASCII) order
+        Collections.sort(this.charList);
+
+        // Build the output string with a space between each character
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < this.charList.size(); i++) {
+            result.append(this.charList.get(i));
+            if (i < this.charList.size() - 1) {
+                result.append(' ');
             }
-            else {
-                System.out.print(ch);
-            }
+        }
+
+        // Print the resulting string
+        System.out.println(result.toString());
+    }
+
+    public void add(Character c) {
+        if (!this.charList.contains(c)) {
+            this.charList.add(c);
         }
     }
 
-    public void add(Character c){
-        this.charSet.add(c);
+    public void remove(Character c) {
+        this.charList.remove(c);
+    }
 
+    public int getSize() {
+        return this.charList.size();
     }
 }
