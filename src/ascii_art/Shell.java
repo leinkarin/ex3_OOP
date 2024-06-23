@@ -4,6 +4,7 @@ import ascii_art.exceptions.*;
 import ascii_output.ConsoleAsciiOutput;
 import ascii_output.HtmlAsciiOutput;
 import image.Image;
+import image_char_matching.SubImgCharMatcher;
 
 import java.io.IOException;
 
@@ -13,7 +14,7 @@ import static ascii_art.KeyboardInput.readLine;
  * The main class of the program. It is responsible for handling user input and running the algorithm.
  */
 public class Shell {
-    private static final String DEFAULT_IMAGE_PATH = "examples/cat.jpeg";
+    private static final String DEFAULT_IMAGE_PATH = "cat.jpeg";
     private static final String DEFAULT_FILE_NAME = "out.html";
     private static final String DEFAULT_FONT = "Courier New";
     private CharsBank charBank;
@@ -22,6 +23,20 @@ public class Shell {
     private String output = CONSOLE_OUTPUT;
     private ConsoleAsciiOutput consoleAsciiOutput = new ConsoleAsciiOutput();
     private HtmlAsciiOutput htmlAsciiOutput;
+
+
+
+    //////////////////////////////////////////
+    ////////Ronens changes and pluses/////////
+    //////////////////////////////////////////
+    private SubImgCharMatcher asciiConvertor;
+    private AsciiArtAlgorithm asciiArtAlgorithm;
+    //////////////////////////////////////////
+    //////////////////////////////////////////
+    //////////////////////////////////////////
+
+
+
 
     // Constants
     private static final String INPUT_PROMPT = ">>> ";
@@ -67,6 +82,16 @@ public class Shell {
         } catch (IOException e) {
             System.out.println(INCORRECT_IMAGE_FILE_MSG);
         }
+
+        //////////////////////////////////////////
+        ////////Ronens changes and pluses/////////
+        //////////////////////////////////////////
+        char[] charSet = {'0','1','2','3','4','5','6','7','8','9'};
+        this.asciiConvertor = new SubImgCharMatcher(charSet);
+        this.asciiArtAlgorithm = new AsciiArtAlgorithm(resolution,image, asciiConvertor);
+        //////////////////////////////////////////
+        //////////////////////////////////////////
+        //////////////////////////////////////////
     }
 
     /**
@@ -124,14 +149,22 @@ public class Shell {
         if (this.charBank.getSize() < 2) {
             throw new SmallCharsetException();
         }
-        char[][] imageChars = run(this.image, this.resolution, this.charBank);
 
+
+        //////////////////////////////////////////
+        ////////Ronens changes and pluses/////////
+        //////////////////////////////////////////
+        //        char[][] imageChars = run(this.image, this.resolution, this.charBank);///instead of this run
+        char[][] imageChars = asciiArtAlgorithm.run();
+        //////////////////////////////////////////
+        //////////////////////////////////////////
+        //////////////////////////////////////////
+//
         if (this.output.equals(CONSOLE_OUTPUT)) {
             consoleAsciiOutput.out(imageChars);
         } else {
             htmlAsciiOutput.out(imageChars);
         }
-
     }
 
     /*

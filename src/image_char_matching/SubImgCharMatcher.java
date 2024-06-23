@@ -37,9 +37,18 @@ public class SubImgCharMatcher {
 
 
     //todo- this func gets a value of brightness and return the right char from the charSet in the class
-    public char getCharByImageBrightness(double brightness){
+    public char getCharByImageBrightness(double brightness) {
+        char bestChar = charSet[0];
+        double smallestDifference = Double.MAX_VALUE;
 
-        return 'g';
+        for (Character c : brightnessMap.keySet()) {
+            double difference = Math.abs(brightness - brightnessMap.get(c));
+            if (difference < smallestDifference) {
+                smallestDifference = difference;
+                bestChar = c;
+            }
+        }
+        return bestChar;
     }
 
     //todo- this func add c to the chrSet

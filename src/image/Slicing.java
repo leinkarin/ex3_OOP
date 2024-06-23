@@ -2,6 +2,11 @@ package image;
 import java.awt.*;
 import java.io.IOException;
 
+
+//todo problem:
+//todo problem:
+//todo- the main problem with slicing is that it works well with same size of hight and width
+//todo problem:
 public class Slicing {
     private final int resolution;
     private final Image image;
@@ -39,39 +44,34 @@ public class Slicing {
 //    }
 
     private Image[][] makeSubPicByRes() {
-        int subWidth = image.getWidth() / resolution;
-        int subHeight = image.getHeight() / resolution;
+        int sizeOfSubIm = image.getWidth() / resolution; // גודל תת-תמונה צריך להיות מבוסס על הרוחב והגובה לפי הרזולוציה
+        int subRow = resolution;
+        int subCol = image.getHeight() / sizeOfSubIm;
 
         System.out.println("Image Width: " + image.getWidth() + ", Image Height: " + image.getHeight());
-        System.out.println("Sub-Image Width: " + subWidth + ", Sub-Image Height: " + subHeight);
+        System.out.println("Sub-Image Size: " + sizeOfSubIm + ", Rows: " + subRow + ", Columns: " + subCol);
 
-        int rows = image.getHeight() / subHeight;
-        int cols = image.getWidth() / subWidth;
+        this.subPictures = new Image[subRow][subCol];
 
-        System.out.println("Rows: " + rows + ", Columns: " + cols);
+        for (int row = 0; row < subRow; row++) {
+            for (int col = 0; col < subCol; col++) {
+                Color[][] subPixels = new Color[sizeOfSubIm][sizeOfSubIm];
 
-        this.subPictures = new Image[rows][cols];
-
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                Color[][] subPixels = new Color[subHeight][subWidth];
-
-                for (int i = 0; i < subHeight; i++) {
-                    for (int j = 0; j < subWidth; j++) {
-                        int x = col * subWidth + j;
-                        int y = row * subHeight + i;
+                for (int i = 0; i < sizeOfSubIm; i++) {
+                    for (int j = 0; j < sizeOfSubIm; j++) {
+                        int x = col * sizeOfSubIm + j;
+                        int y = row * sizeOfSubIm + i;
                         if (x < image.getWidth() && y < image.getHeight()) {
                             subPixels[i][j] = image.getPixel(y, x);
                         } else {
-                            subPixels[i][j] = new Color(255, 255, 255); // White color for padding
+                            subPixels[i][j] = new Color(255, 255, 255); // צבע לבן למילוי
                         }
                     }
                 }
-                this.subPictures[row][col] = new Image(subPixels, subWidth, subHeight);
+                this.subPictures[row][col] = new Image(subPixels, sizeOfSubIm, sizeOfSubIm);
             }
         }
         return this.subPictures;
-
     }
 
     public Image[][] getSubPictures() {
@@ -80,18 +80,18 @@ public class Slicing {
 
     public static void main(String[] args) {
         try {
-            // Load the image
-            Image image = new Image("examples/new_dingo.png"); // Use your image path here
+            // טעינת התמונה
+            Image image = new Image("examples/dino.png"); // השתמש במסלול שלך כאן
 
-            // Pad the image
+            // ריפוד התמונה
             Padding padding = new Padding(image);
             Image paddedImage = padding.paddingTheImage();
 
-            // Slice the padded image
-            Slicing slicing = new Slicing(8, paddedImage);
+            // חיתוך התמונה המרופדת
+            Slicing slicing = new Slicing(4, paddedImage);
             Image[][] subImages = slicing.getSubPictures();
 
-            // Save each sub-image
+            // שמירת כל תת-תמונה
             int count = 1;
             for (int row = 0; row < subImages.length; row++) {
                 for (int col = 0; col < subImages[row].length; col++) {
@@ -104,5 +104,6 @@ public class Slicing {
             e.printStackTrace();
         }
     }
+
 }
 

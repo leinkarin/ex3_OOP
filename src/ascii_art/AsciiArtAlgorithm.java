@@ -3,6 +3,8 @@ package ascii_art;
 import image.*;
 import image_char_matching.SubImgCharMatcher;
 
+import java.io.IOException;
+
 
 public class AsciiArtAlgorithm {
     private int resolution;
@@ -11,7 +13,7 @@ public class AsciiArtAlgorithm {
     private BrightnessCalculation brightnessCalculation;
 
 
-    public AsciiArtAlgorithm(int resolution,Image image, SubImgCharMatcher imageAsciiConvertor) {
+    public AsciiArtAlgorithm(int resolution, Image image, SubImgCharMatcher imageAsciiConvertor) {
         this.resolution = resolution;
         this.image = image;
         this.imageAsciiConvertor = imageAsciiConvertor;
@@ -39,5 +41,37 @@ public class AsciiArtAlgorithm {
             }
         }
         return asciiArt;
+    }
+
+
+    public static void main(String[] args) {
+        try {
+            // טעינת התמונה
+            Image image = new Image("examples/cat.jpeg"); // השתמש במסלול שלך כאן
+
+            // ריפוד התמונה
+            Padding padding = new Padding(image);
+            Image paddedImage = padding.paddingTheImage();
+
+            // הגדרת סט התווים
+            char[] charSet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', ';', ':', ',', '.'};
+            SubImgCharMatcher matcher = new SubImgCharMatcher(charSet);
+
+            // יצירת האלגוריתם
+            AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(128, paddedImage, matcher);
+
+            // הרצת האלגוריתם
+            char[][] asciiArt = asciiArtAlgorithm.run();
+
+            // הדפסת התוצאה
+            for (char[] row : asciiArt) {
+                for (char c : row) {
+                    System.out.print(c + " ");
+                }
+                System.out.println();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
